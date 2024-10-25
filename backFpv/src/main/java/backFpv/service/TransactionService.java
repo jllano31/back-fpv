@@ -1,6 +1,8 @@
 package backFpv.service;
 
+import backFpv.dto.ClientDTO;
 import backFpv.dto.TransactionDTO;
+import backFpv.model.Client;
 import backFpv.model.Transaction;
 import backFpv.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +18,23 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
 
+    @Autowired
+    private ClientService clientService;
+
+    @Autowired
+    private EmailService emailService;
+
     public TransactionDTO subscribeToFund(TransactionDTO transactionDTO) {
         try {
             transactionDTO.setTransactionType("subscription");
             transactionDTO.setTransactionDate(LocalDateTime.now());
-
-            // Convertir DTO a entidad y guardar
             Transaction transaction = convertToEntity(transactionDTO);
+            ClientDTO client = clientService.getClientById(transactionDTO.getClientId());
             Transaction savedTransaction = transactionRepository.save(transaction);
+            String subject = "Confirmación de Suscripción al Fondo";
+            String text = "Estimado " + client.getName() + ", se ha realizado su suscripción al fondo con éxito. " +
+                    "Monto: " + transactionDTO.getAmount();
+            emailService.sendEmail(client.getEmail(), subject, text);
 
             return convertToDTO(savedTransaction);
         } catch (Exception e) {
@@ -36,7 +47,12 @@ public class TransactionService {
             transactionDTO.setTransactionType("cancellation");
             transactionDTO.setTransactionDate(LocalDateTime.now());
             Transaction transaction = convertToEntity(transactionDTO);
+            ClientDTO client = clientService.getClientById(transactionDTO.getClientId());
             Transaction savedTransaction = transactionRepository.save(transaction);
+            String subject = "Confirmación de Cancelación de Suscripción";
+            String text = "Estimado " + client.getName() + ", se ha realizado la cancelación de su suscripción al fondo. " +
+                    "Monto devuelto: " + transactionDTO.getAmount();
+            emailService.sendEmail(client.getEmail(), subject, text);
             return convertToDTO(savedTransaction);
         } catch (Exception e) {
             throw new RuntimeException("Error al cancelar la suscripción del cliente al fondo: " + e.getMessage());
