@@ -6,6 +6,7 @@ import backFpv.model.Client;
 import backFpv.model.FundSubscribed;
 import backFpv.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,9 @@ public class ClientService {
 
     @Autowired
     private ClientRepository clientRepository;
+
+    @Value("${app.client.initial-balance}")
+    private double initialBalance;
 
     // Obtener todos los clientes
     public List<ClientDTO> getAllClients() {
@@ -47,6 +51,9 @@ public class ClientService {
     public ClientDTO saveClient(ClientDTO clientDTO) {
         try {
             Client client = convertToEntity(clientDTO);
+            if (client.getId() == null || client.getAvailableBalance() == 0) {
+                client.setAvailableBalance(initialBalance);
+            }
             Client savedClient = clientRepository.save(client);
             return convertToDTO(savedClient);
         } catch (Exception e) {
