@@ -6,6 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class FundDTO {
+
+    private String id;
+
     @NotBlank(message = "El nombre del fondo es obligatorio.")
     @Size(min = 3, max = 100, message = "El nombre del fondo debe tener entre 3 y 100 caracteres.")
     private String name;
@@ -19,6 +22,14 @@ public class FundDTO {
 
     public @NotBlank(message = "El nombre del fondo es obligatorio.") @Size(min = 3, max = 100, message = "El nombre del fondo debe tener entre 3 y 100 caracteres.") String getName() {
         return name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setName(@NotBlank(message = "El nombre del fondo es obligatorio.") @Size(min = 3, max = 100, message = "El nombre del fondo debe tener entre 3 y 100 caracteres.") String name) {
