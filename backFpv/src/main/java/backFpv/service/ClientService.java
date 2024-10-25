@@ -69,7 +69,6 @@ public class ClientService {
         clientDTO.setId(client.getId());
         clientDTO.setName(client.getName());
         clientDTO.setAvailableBalance(client.getAvailableBalance());
-
         List<FundSubscribedDTO> subscribedFundsDTO = client.getSubscribedFunds().stream()
                 .map(fund -> {
                     FundSubscribedDTO dto = new FundSubscribedDTO();
@@ -82,6 +81,8 @@ public class ClientService {
                 .collect(Collectors.toList());
 
         clientDTO.setSubscribedFunds(subscribedFundsDTO);
+        clientDTO.setEmail(client.getEmail());
+        clientDTO.setPhoneNumber(client.getPhoneNumber());
         return clientDTO;
     }
 
@@ -91,6 +92,8 @@ public class ClientService {
         client.setId(clientDTO.getId());
         client.setName(clientDTO.getName());
         client.setAvailableBalance(clientDTO.getAvailableBalance());
+        client.setEmail(clientDTO.getEmail());
+        client.setPhoneNumber(clientDTO.getPhoneNumber());
 
         List<FundSubscribed> subscribedFunds = clientDTO.getSubscribedFunds().stream()
                 .map(fundDTO -> {
