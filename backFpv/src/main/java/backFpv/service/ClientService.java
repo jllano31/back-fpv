@@ -13,27 +13,41 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio para gestionar las operaciones relacionadas con los clientes,
+ * incluyendo obtención, creación, actualización y eliminación.
+ */
 @Service
 public class ClientService {
 
+    /** Repositorio de clientes para operaciones de base de datos. */
     @Autowired
     private ClientRepository clientRepository;
 
+    /** Saldo inicial asignado a un cliente nuevo. */
     @Value("${app.client.initial-balance}")
     private double initialBalance;
 
-    // Obtener todos los clientes
+    /**
+     * Obtener todos los clientes registrados.
+     *
+     * @return Lista de objetos ClientDTO.
+     */
     public List<ClientDTO> getAllClients() {
-        try{
+        try {
             List<Client> clients = clientRepository.findAll();
             return clients.stream().map(this::convertToDTO).collect(Collectors.toList());
         } catch (Exception e) {
-            throw new RuntimeException("Error al recuperar los clientes: "+e.getMessage());
+            throw new RuntimeException("Error al recuperar los clientes: " + e.getMessage());
         }
-
     }
 
-    // Obtener un cliente por su ID
+    /**
+     * Obtener un cliente por su ID.
+     *
+     * @param id ID del cliente.
+     * @return ClientDTO correspondiente al cliente.
+     */
     public ClientDTO getClientById(String id) {
         try {
             Optional<Client> clientOpt = clientRepository.findById(id);
@@ -47,7 +61,12 @@ public class ClientService {
         }
     }
 
-    // Crear o actualizar un cliente
+    /**
+     * Crear o actualizar un cliente.
+     *
+     * @param clientDTO Objeto ClientDTO con los datos del cliente.
+     * @return ClientDTO correspondiente al cliente creado o actualizado.
+     */
     public ClientDTO saveClient(ClientDTO clientDTO) {
         try {
             Client client = convertToEntity(clientDTO);
@@ -61,7 +80,11 @@ public class ClientService {
         }
     }
 
-    // Eliminar un cliente por su ID
+    /**
+     * Eliminar un cliente por su ID.
+     *
+     * @param id ID del cliente a eliminar.
+     */
     public void deleteClient(String id) {
         try {
             clientRepository.deleteById(id);
@@ -70,7 +93,12 @@ public class ClientService {
         }
     }
 
-    // Convertir client a clientDTO
+    /**
+     * Convertir un objeto Client a ClientDTO.
+     *
+     * @param client Objeto Client a convertir.
+     * @return Objeto ClientDTO.
+     */
     private ClientDTO convertToDTO(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
@@ -93,7 +121,12 @@ public class ClientService {
         return clientDTO;
     }
 
-    // Metodo para convertir ClientDTo a Client
+    /**
+     * Convertir un objeto ClientDTO a Client.
+     *
+     * @param clientDTO Objeto ClientDTO a convertir.
+     * @return Objeto Client.
+     */
     private Client convertToEntity(ClientDTO clientDTO) {
         Client client = new Client();
         client.setId(clientDTO.getId());

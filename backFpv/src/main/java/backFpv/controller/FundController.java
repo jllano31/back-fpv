@@ -21,6 +21,10 @@ import java.util.List;
 @RequestMapping("/api/funds")
 public class FundController {
 
+    /**
+     * Servicio de fondos utilizado para gestionar las operaciones de los fondos,
+     * incluyendo creación, actualización, y eliminación de registros de los fondos.
+     */
     @Autowired
     private FundService fundService;
 

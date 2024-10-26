@@ -19,6 +19,10 @@ import java.util.List;
 @RequestMapping("/api/transactions")
 public class TransactionController {
 
+    /**
+     * Servicio de cliente utilizado para gestionar las operaciones de las transacciones,
+     * incluyendo creación, actualización de las transacciones.
+     */
     @Autowired
     private TransactionService transactionService;
 
@@ -32,10 +36,10 @@ public class TransactionController {
         }
     }
 
-    @PostMapping("/cancel")
-    public ResponseEntity<TransactionDTO> cancelSubscription(@RequestBody TransactionDTO transactionDTO) {
+    @PostMapping("/cancel/{id}")
+    public ResponseEntity<TransactionDTO> cancelSubscription(@PathVariable String id) {
         try {
-            TransactionDTO transaction = transactionService.cancelSubscription(transactionDTO);
+            TransactionDTO transaction = transactionService.cancelSubscription(id);
             return new ResponseEntity<>(transaction, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

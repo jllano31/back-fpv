@@ -2,13 +2,23 @@ package backFpv.dto;
 
 import java.util.List;
 
+/**
+ * DTO para representar los datos del cliente en el sistema, incluyendo
+ * información personal y fondos suscritos.
+ */
 public class ClientDTO {
-    // Propiedades de cliente
+
+    /** ID único del cliente. */
     private String id;
+    /** Nombre del cliente. */
     private String name;
+    /** Saldo disponible del cliente. */
     private double availableBalance;
+    /** Lista de fondos a los que el cliente está suscrito. */
     private List<FundSubscribedDTO> subscribedFunds;
+    /** Correo electrónico del cliente. */
     private String email;
+    /** Número de teléfono del cliente. */
     private String phoneNumber;
 
     public String getId() {
