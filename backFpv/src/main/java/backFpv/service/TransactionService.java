@@ -43,28 +43,30 @@ public class TransactionService {
      * @param transactionDTO Detalles de la transacción de suscripción.
      * @return Detalles de la transacción suscrita.
      */
-    public TransactionDTO subscribeToFund(TransactionDTO transactionDTO) {
+    public TransactionDTO subscribeToFund(TransactionDTO transactionDTO) throws InsufficientBalanceException {
         try {
             transactionDTO.setTransactionType("subscription");
             transactionDTO.setTransactionDate(LocalDateTime.now());
             Transaction transaction = convertToEntity(transactionDTO);
             ClientDTO client = clientService.getClientById(transactionDTO.getClientId());
             FundDTO fund = fundService.getFundById(transactionDTO.getFundId());
-            if (client.getAvailableBalance() < fund.getMinimumInvestment() &&
-                transactionDTO.getAmount() > client.getAvailableBalance()) {
+            if (client.getAvailableBalance() < fund.getMinimumInvestment() ||
+                    transactionDTO.getAmount() > client.getAvailableBalance()) {
                 throw new InsufficientBalanceException("No tiene saldo disponible para vincularse al fondo " +
                         fund.getName());
             }
             client.setAvailableBalance(client.getAvailableBalance() - transactionDTO.getAmount());
             clientService.saveClient(client);
             Transaction savedTransaction = transactionRepository.save(transaction);
-            String subject = "Confirmación de Suscripción al Fondo";
-            String text = "Estimado " + client.getName() + ", se ha realizado su suscripción al fondo con éxito. " +
-                    "Monto: " + transactionDTO.getAmount();
-            emailService.sendEmail(client.getEmail(), subject, text);
+            emailService.sendEmail(client.getEmail(), "Confirmación de Suscripción al Fondo",
+                    "Estimado " + client.getName() +
+                            ", se ha realizado su suscripción al fondo con éxito. Monto: " +
+                            transactionDTO.getAmount());
             return convertToDTO(savedTransaction);
+        } catch (InsufficientBalanceException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("Error al suscribir al cliente al fondo: " + e.getMessage());
+            throw new RuntimeException("Error al suscribir al cliente al fondo: " + e.getMessage(), e);
         }
     }
 
@@ -81,7 +83,7 @@ public class TransactionService {
             transaction.setTransactionDate(LocalDateTime.now());
             ClientDTO client = clientService.getClientById(transaction.getClientId());
             client.setAvailableBalance(client.getAvailableBalance() + transaction.getAmount());
-            clientService.saveClient(client);
+            ClientDTO returnClient = clientService.saveClient(client);
             Transaction transactionEntity = convertToEntity(transaction);
             Transaction savedTransaction = transactionRepository.save(transactionEntity);
             String subject = "Confirmación de Cancelación de Suscripción";

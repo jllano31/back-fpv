@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -99,12 +100,13 @@ public class ClientService {
      * @param client Objeto Client a convertir.
      * @return Objeto ClientDTO.
      */
-    private ClientDTO convertToDTO(Client client) {
+    ClientDTO convertToDTO(Client client) {
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setId(client.getId());
         clientDTO.setName(client.getName());
         clientDTO.setAvailableBalance(client.getAvailableBalance());
-        List<FundSubscribedDTO> subscribedFundsDTO = client.getSubscribedFunds().stream()
+        List<FundSubscribedDTO> subscribedFundsDTO = client.getSubscribedFunds() != null
+                ? client.getSubscribedFunds().stream()
                 .map(fund -> {
                     FundSubscribedDTO dto = new FundSubscribedDTO();
                     dto.setFundId(fund.getFundId());
@@ -113,7 +115,8 @@ public class ClientService {
                     dto.setSubscriptionDate(fund.getSubscriptionDate());
                     return dto;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
         clientDTO.setSubscribedFunds(subscribedFundsDTO);
         clientDTO.setEmail(client.getEmail());
@@ -127,26 +130,28 @@ public class ClientService {
      * @param clientDTO Objeto ClientDTO a convertir.
      * @return Objeto Client.
      */
-    private Client convertToEntity(ClientDTO clientDTO) {
+    Client convertToEntity(ClientDTO clientDTO) {
         Client client = new Client();
         client.setId(clientDTO.getId());
         client.setName(clientDTO.getName());
         client.setAvailableBalance(clientDTO.getAvailableBalance());
         client.setEmail(clientDTO.getEmail());
         client.setPhoneNumber(clientDTO.getPhoneNumber());
-
-        List<FundSubscribed> subscribedFunds = clientDTO.getSubscribedFunds().stream()
-                .map(fundDTO -> {
-                    FundSubscribed fund = new FundSubscribed();
-                    fund.setFundId(fundDTO.getFundId());
-                    fund.setFundName(fundDTO.getFundName());
-                    fund.setInvestedAmount(fundDTO.getInvestedAmount());
-                    fund.setSubscriptionDate(fundDTO.getSubscriptionDate());
-                    return fund;
-                })
-                .collect(Collectors.toList());
-
-        client.setSubscribedFunds(subscribedFunds);
+        if (clientDTO.getSubscribedFunds() != null) {
+            List<FundSubscribed> subscribedFunds = clientDTO.getSubscribedFunds().stream()
+                    .map(fundDTO -> {
+                        FundSubscribed fund = new FundSubscribed();
+                        fund.setFundId(fundDTO.getFundId());
+                        fund.setFundName(fundDTO.getFundName());
+                        fund.setInvestedAmount(fundDTO.getInvestedAmount());
+                        fund.setSubscriptionDate(fundDTO.getSubscriptionDate());
+                        return fund;
+                    })
+                    .collect(Collectors.toList());
+            client.setSubscribedFunds(subscribedFunds);
+        } else {
+            client.setSubscribedFunds(new ArrayList<>());  // Lista vacía si es nula
+        }
         return client;
     }
 }
