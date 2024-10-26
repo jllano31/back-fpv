@@ -1,5 +1,6 @@
 package backFpv.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public class ClientDTO {
     /** Saldo disponible del cliente. */
     private double availableBalance;
     /** Lista de fondos a los que el cliente está suscrito. */
-    private List<FundSubscribedDTO> subscribedFunds;
+    private List<FundSubscribedDTO> subscribedFunds = new ArrayList<>();
     /** Correo electrónico del cliente. */
     private String email;
     /** Número de teléfono del cliente. */

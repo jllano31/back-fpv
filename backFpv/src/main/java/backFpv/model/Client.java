@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class Client {
     @NotNull(message = "El saldo disponible es obligatorio.")
     private double availableBalance;
     /** Lista de fondos a los que el cliente está suscrito. */
-    private List<FundSubscribed> subscribedFunds;
+    private List<FundSubscribed> subscribedFunds = new ArrayList<>();
     /** Correo electrónico del cliente. Debe ser válido y es obligatorio. */
     @NotBlank(message = "El correo electrónico es obligatorio.")
     @Email(message = "El correo electrónico debe ser válido.")
