@@ -5,15 +5,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa una transacción en el sistema, con detalles
+ * sobre el cliente, fondo, tipo de transacción, monto y fecha.
+ */
 @Document(collection = "transactions")
 public class Transaction {
 
+    /** ID único de la transacción. */
     @Id
     private String id;
+    /** ID del cliente que realiza la transacción. */
     private String clientId;
+    /** ID del fondo asociado a la transacción. */
     private String fundId;
+    /** Tipo de la transacción (ej. suscripción, cancelación). */
     private String transactionType;
+    /** Monto de la transacción. */
     private Double amount;
+    /** Fecha en la que se realiza la transacción. */
     private LocalDateTime transactionDate;
 
     public String getId() {

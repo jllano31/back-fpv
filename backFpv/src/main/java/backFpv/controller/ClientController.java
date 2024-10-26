@@ -20,6 +20,10 @@ import java.util.List;
 @RequestMapping("/api/clients")
 public class ClientController {
 
+    /**
+     * Servicio de cliente utilizado para gestionar las operaciones de los clientes,
+     * incluyendo creación, actualización, y eliminación de registros de clientes.
+     */
     @Autowired
     private ClientService clientService;
 

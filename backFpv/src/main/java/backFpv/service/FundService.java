@@ -10,12 +10,22 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Servicio para gestionar operaciones relacionadas con los fondos,
+ * incluyendo creación, actualización, obtención y eliminación.
+ */
 @Service
 public class FundService {
 
+    /** Repositorio para realizar operaciones de base de datos con los fondos. */
     @Autowired
     private FundRepository fundRepository;
 
+    /**
+     * Obtener todos los fondos disponibles.
+     *
+     * @return Lista de objetos FundDTO.
+     */
     public List<FundDTO> getAllFunds() {
         try {
             List<Fund> funds = fundRepository.findAll();
@@ -28,6 +38,12 @@ public class FundService {
         }
     }
 
+    /**
+     * Obtener un fondo por su ID.
+     *
+     * @param id ID del fondo a obtener.
+     * @return FundDTO correspondiente al fondo.
+     */
     public FundDTO getFundById(String id) {
         try {
             Optional<Fund> fundOpt = fundRepository.findById(id);
@@ -41,6 +57,12 @@ public class FundService {
         }
     }
 
+    /**
+     * Guardar o actualizar un fondo.
+     *
+     * @param fundDTO Objeto FundDTO con los datos del fondo.
+     * @return FundDTO correspondiente al fondo guardado o actualizado.
+     */
     public FundDTO saveFund(FundDTO fundDTO) {
         try {
             Fund fund = convertToEntity(fundDTO);
@@ -51,6 +73,11 @@ public class FundService {
         }
     }
 
+    /**
+     * Eliminar un fondo por su ID.
+     *
+     * @param id ID del fondo a eliminar.
+     */
     public void deleteFund(String id) {
         try {
             if (fundRepository.existsById(id)) {
@@ -63,6 +90,12 @@ public class FundService {
         }
     }
 
+    /**
+     * Convertir un objeto Fund a FundDTO.
+     *
+     * @param fund Objeto Fund a convertir.
+     * @return Objeto FundDTO.
+     */
     private FundDTO convertToDTO(Fund fund) {
         FundDTO fundDTO = new FundDTO();
         fundDTO.setId(fund.getId());
@@ -72,6 +105,12 @@ public class FundService {
         return fundDTO;
     }
 
+    /**
+     * Convertir un objeto FundDTO a Fund.
+     *
+     * @param fundDTO Objeto FundDTO a convertir.
+     * @return Objeto Fund.
+     */
     private Fund convertToEntity(FundDTO fundDTO) {
         Fund fund = new Fund();
         fund.setId(fundDTO.getId());

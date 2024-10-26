@@ -9,19 +9,29 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+/**
+ * Entidad que representa a un cliente en el sistema, incluyendo sus datos personales,
+ * saldo disponible, fondos suscritos, y detalles de contacto.
+ */
 @Document(collection = "clients")
 public class Client {
 
+    /** ID único del cliente. */
     @Id
     private String id;
+    /** Nombre del cliente. Es obligatorio. */
     @NotBlank(message = "El nombre del cliente es obligatorio.")
     private String name;
+    /** Saldo disponible del cliente. Es obligatorio. */
     @NotNull(message = "El saldo disponible es obligatorio.")
     private double availableBalance;
+    /** Lista de fondos a los que el cliente está suscrito. */
     private List<FundSubscribed> subscribedFunds;
+    /** Correo electrónico del cliente. Debe ser válido y es obligatorio. */
     @NotBlank(message = "El correo electrónico es obligatorio.")
     @Email(message = "El correo electrónico debe ser válido.")
     private String email;
+    /** Número de teléfono del cliente. Debe contener 10 dígitos y es obligatorio. */
     @NotBlank(message = "El número de teléfono es obligatorio.")
     @Pattern(regexp = "^[0-9]{10}$", message = "El número de teléfono debe contener 10 dígitos.")
     private String phoneNumber;
