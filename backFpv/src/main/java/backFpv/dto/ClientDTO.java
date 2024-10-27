@@ -1,5 +1,7 @@
 package backFpv.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class ClientDTO {
     private String email;
     /** Número de teléfono del cliente. */
     private String phoneNumber;
+    /** Usuario del cliente. */
+    private String userName;
 
     public String getId() {
         return id;
@@ -68,5 +72,13 @@ public class ClientDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

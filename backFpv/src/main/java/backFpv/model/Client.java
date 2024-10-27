@@ -37,6 +37,11 @@ public class Client {
     @Pattern(regexp = "^[0-9]{10}$", message = "El número de teléfono debe contener 10 dígitos.")
     private String phoneNumber;
 
+    /** Usuario del cliente. Es obligatorio. */
+    @NotBlank(message = "El usuario del cliente es obligatorio.")
+    private String userName;
+
+
     public String getId() {
         return id;
     }
@@ -83,5 +88,13 @@ public class Client {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public @NotBlank(message = "El usuario del cliente es obligatorio.") String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(@NotBlank(message = "El usuario del cliente es obligatorio.") String userName) {
+        this.userName = userName;
     }
 }

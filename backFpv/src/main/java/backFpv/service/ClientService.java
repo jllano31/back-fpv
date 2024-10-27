@@ -63,6 +63,26 @@ public class ClientService {
     }
 
     /**
+     * Obtener un cliente por su ID.
+     *
+     * @param userName usuario del cliente.
+     * @return ClientDTO correspondiente al cliente.
+     */
+    public ClientDTO getClientByUserName(String userName) {
+        try {
+            Optional<Client> clientOpt = clientRepository.findByUserName(userName);
+            if (clientOpt.isPresent()) {
+                return convertToDTO(clientOpt.get());
+            } else {
+                throw new RuntimeException("No se encuentra un cliente con el usuario: " + userName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al recuperar el cliente con usuario: " + userName + ". Error: " +
+                    e.getMessage());
+        }
+    }
+
+    /**
      * Crear o actualizar un cliente.
      *
      * @param clientDTO Objeto ClientDTO con los datos del cliente.
@@ -121,6 +141,7 @@ public class ClientService {
         clientDTO.setSubscribedFunds(subscribedFundsDTO);
         clientDTO.setEmail(client.getEmail());
         clientDTO.setPhoneNumber(client.getPhoneNumber());
+        clientDTO.setUserName(client.getUserName());
         return clientDTO;
     }
 
@@ -152,6 +173,7 @@ public class ClientService {
         } else {
             client.setSubscribedFunds(new ArrayList<>());  // Lista vacía si es nula
         }
+        client.setUserName(clientDTO.getUserName());
         return client;
     }
 }
