@@ -36,6 +36,10 @@ public class TransactionDTO {
     @NotNull(message = "La fecha de la transacción es obligatoria.")
     private LocalDateTime transactionDate;
 
+    /** Tipo de envio de la confirmacionde la tansaccion, Email o SMS. */
+    @NotBlank(message = "El tipo de envio de confirmacion, puede ser Email o SMS")
+    private String sendType;
+
     public String getId() {
         return id;
     }
@@ -86,5 +90,14 @@ public class TransactionDTO {
     public void setTransactionDate(@NotNull(message = "La fecha de la transacción es obligatoria.")
                                    LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public @NotBlank(message = "El tipo de envio de confirmacion, puede ser Email o SMS") String getSendType() {
+        return sendType;
+    }
+
+    public void setSendType(@NotBlank(message = "El tipo de envio de confirmacion, puede ser Email o SMS")
+                            String sendType) {
+        this.sendType = sendType;
     }
 }
