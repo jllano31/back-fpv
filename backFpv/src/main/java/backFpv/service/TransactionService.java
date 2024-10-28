@@ -4,6 +4,7 @@ import backFpv.dto.ClientDTO;
 import backFpv.dto.FundDTO;
 import backFpv.dto.TransactionDTO;
 import backFpv.exception.InsufficientBalanceException;
+import backFpv.integrations.AwsSmsService;
 import backFpv.model.Client;
 import backFpv.model.Transaction;
 import backFpv.repository.TransactionRepository;
@@ -37,6 +38,10 @@ public class TransactionService {
     @Autowired
     private FundService fundService;
 
+    /** Servicio de AWS para gestionar en elvio de mensajes SMS. */
+    @Autowired
+    private AwsSmsService awsSmsService;
+
     /**
      * Suscribir a un cliente a un fondo.
      *
@@ -58,10 +63,15 @@ public class TransactionService {
             client.setAvailableBalance(client.getAvailableBalance() - transactionDTO.getAmount());
             clientService.saveClient(client);
             Transaction savedTransaction = transactionRepository.save(transaction);
-            emailService.sendEmail(client.getEmail(), "Confirmación de Suscripción al Fondo",
-                    "Estimado " + client.getName() +
-                            ", se ha realizado su suscripción al fondo con éxito. Monto: " +
-                            transactionDTO.getAmount());
+            if (transactionDTO.getSendType().equals("SMS")) {
+                awsSmsService.sendSms("+57" + client.getPhoneNumber(), "prueba desde java");
+            } else {
+                emailService.sendEmail(client.getEmail(), "Confirmación de Suscripción al Fondo: " +
+                                fund.getName(),
+                        "Estimado " + client.getName() +
+                                ", se ha realizado su suscripción al fondo con éxito. Monto: " +
+                                transactionDTO.getAmount());
+            }
             return convertToDTO(savedTransaction);
         } catch (InsufficientBalanceException e) {
             throw e;
@@ -160,6 +170,7 @@ public class TransactionService {
         transactionDTO.setTransactionType(transaction.getTransactionType());
         transactionDTO.setAmount(transaction.getAmount());
         transactionDTO.setTransactionDate(transaction.getTransactionDate());
+        transactionDTO.setSendType(transaction.getSendType());
         return transactionDTO;
     }
 
@@ -177,6 +188,7 @@ public class TransactionService {
         transaction.setTransactionType(transactionDTO.getTransactionType());
         transaction.setAmount(transactionDTO.getAmount());
         transaction.setTransactionDate(transactionDTO.getTransactionDate());
+        transaction.setSendType(transactionDTO.getSendType());
         return transaction;
     }
 }
