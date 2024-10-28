@@ -31,7 +31,8 @@ public class ClientController {
     private ClientService clientService;
 
     @GetMapping
-    @Operation(summary = "Obtener todos los clientes", description = "Devuelve una lista de todos los clientes en el sistema")
+    @Operation(summary = "Obtener todos los clientes",
+            description = "Devuelve una lista de todos los clientes en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de clientes obtenida exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
@@ -42,7 +43,8 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener cliente por ID", description = "Devuelve los detalles del cliente especificado por su ID")
+    @Operation(summary = "Obtener cliente por ID",
+            description = "Devuelve los detalles del cliente especificado por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
@@ -58,7 +60,8 @@ public class ClientController {
     }
 
     @GetMapping("/user/{userName}")
-    @Operation(summary = "Obtener cliente por nombre de usuario", description = "Devuelve los detalles del cliente especificado por su nombre de usuario")
+    @Operation(summary = "Obtener cliente por nombre de usuario",
+            description = "Devuelve los detalles del cliente especificado por su nombre de usuario")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente encontrado"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
@@ -89,7 +92,8 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar cliente por ID", description = "Actualiza los detalles del cliente especificado por su ID")
+    @Operation(summary = "Actualizar cliente por ID",
+            description = "Actualiza los detalles del cliente especificado por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Cliente actualizado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),

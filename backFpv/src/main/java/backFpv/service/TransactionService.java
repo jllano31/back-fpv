@@ -64,7 +64,9 @@ public class TransactionService {
             clientService.saveClient(client);
             Transaction savedTransaction = transactionRepository.save(transaction);
             if (transactionDTO.getSendType().equals("SMS")) {
-                awsSmsService.sendSms("+57" + client.getPhoneNumber(), "prueba desde java");
+                awsSmsService.sendSms("+57" + client.getPhoneNumber(),
+                        "Se confirma suscripción al fondo: " + fund.getName() +
+                                ". Monto: " + transactionDTO.getAmount());
             } else {
                 emailService.sendEmail(client.getEmail(), "Confirmación de Suscripción al Fondo: " +
                                 fund.getName(),

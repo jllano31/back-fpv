@@ -32,7 +32,8 @@ public class FundController {
     private FundService fundService;
 
     @GetMapping
-    @Operation(summary = "Obtener todos los fondos", description = "Devuelve una lista de todos los fondos disponibles en el sistema")
+    @Operation(summary = "Obtener todos los fondos",
+            description = "Devuelve una lista de todos los fondos disponibles en el sistema")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de fondos obtenida exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
@@ -78,7 +79,8 @@ public class FundController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Actualizar fondo por ID", description = "Actualiza los detalles del fondo especificado por su ID")
+    @Operation(summary = "Actualizar fondo por ID",
+            description = "Actualiza los detalles del fondo especificado por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Fondo actualizado exitosamente"),
             @ApiResponse(responseCode = "404", description = "Fondo no encontrado"),
