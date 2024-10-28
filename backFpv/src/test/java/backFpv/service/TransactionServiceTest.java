@@ -235,7 +235,7 @@ public class TransactionServiceTest {
         when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
         TransactionDTO result = transactionService.subscribeToFund(transactionDTO);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
-        verify(awsSmsService, times(1)).sendSms(eq("+571234567890"), contains("prueba desde java"));
+        verify(awsSmsService, times(1)).sendSms(eq("+571234567890"), contains("Se confirma suscripción al fondo: Fondo XYZ. Monto: 200.0"));
         verify(emailService, never()).sendEmail(anyString(), anyString(), anyString());
         assertEquals("T1", result.getId());
     }

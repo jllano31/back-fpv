@@ -44,7 +44,8 @@ public class TransactionController {
     }
 
     @PostMapping("/cancel/{id}")
-    @Operation(summary = "Cancelar suscripción a un fondo", description = "Cancela la suscripción a un fondo específica por ID de transacción")
+    @Operation(summary = "Cancelar suscripción a un fondo",
+            description = "Cancela la suscripción a un fondo específica por ID de transacción")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Suscripción cancelada exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
@@ -59,7 +60,8 @@ public class TransactionController {
     }
 
     @GetMapping("/client/{clientId}")
-    @Operation(summary = "Obtener transacciones por ID de cliente", description = "Devuelve todas las transacciones asociadas a un cliente específico")
+    @Operation(summary = "Obtener transacciones por ID de cliente",
+            description = "Devuelve todas las transacciones asociadas a un cliente específico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transacciones obtenidas exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
@@ -74,7 +76,8 @@ public class TransactionController {
     }
 
     @GetMapping("/fund/{fundId}")
-    @Operation(summary = "Obtener transacciones por ID de fondo", description = "Devuelve todas las transacciones asociadas a un fondo específico")
+    @Operation(summary = "Obtener transacciones por ID de fondo",
+            description = "Devuelve todas las transacciones asociadas a un fondo específico")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transacciones obtenidas exitosamente"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
