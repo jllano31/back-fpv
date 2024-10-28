@@ -25,6 +25,8 @@ public class Transaction {
     private Double amount;
     /** Fecha en la que se realiza la transacción. */
     private LocalDateTime transactionDate;
+    /** Tipó de envio de confirmacion*/
+    private String sendType;
 
     public String getId() {
         return id;
@@ -72,5 +74,13 @@ public class Transaction {
 
     public void setTransactionDate(LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public String getSendType() {
+        return sendType;
+    }
+
+    public void setSendType(String sendType) {
+        this.sendType = sendType;
     }
 }
