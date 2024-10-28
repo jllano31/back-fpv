@@ -246,4 +246,33 @@ public class ClientServiceTest {
         assertNotNull(client.getSubscribedFunds());
         assertTrue(client.getSubscribedFunds().isEmpty());
     }
+
+    @Test
+    void getClientByUserName_ReturnsClientDTO_WhenClientExists() {
+        String userName = "testUser";
+        Client client = new Client();
+        client.setUserName(userName);
+        when(clientRepository.findByUserName(userName)).thenReturn(Optional.of(client));
+        ClientDTO result = clientService.getClientByUserName(userName);
+        assertEquals(userName, result.getUserName());
+        verify(clientRepository, times(1)).findByUserName(userName);
+    }
+
+    @Test
+    void getClientByUserName_ThrowsException_WhenClientNotFound() {
+        String userName = "nonExistentUser";
+        when(clientRepository.findByUserName(userName)).thenReturn(Optional.empty());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> clientService.getClientByUserName(userName));
+        assertEquals("Error al recuperar el cliente con usuario: " + userName + ". Error: No se encuentra un cliente con el usuario: " + userName, exception.getMessage());
+        verify(clientRepository, times(1)).findByUserName(userName);
+    }
+
+    @Test
+    void getClientByUserName_ThrowsException_WhenRepositoryThrowsException() {
+        String userName = "errorUser";
+        when(clientRepository.findByUserName(userName)).thenThrow(new RuntimeException("Repository error"));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> clientService.getClientByUserName(userName));
+        assertEquals("Error al recuperar el cliente con usuario: " + userName + ". Error: Repository error", exception.getMessage());
+        verify(clientRepository, times(1)).findByUserName(userName);
+    }
 }
