@@ -2,6 +2,9 @@ package backFpv.controller;
 
 import backFpv.dto.FundDTO;
 import backFpv.service.FundService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,11 @@ public class FundController {
     private FundService fundService;
 
     @GetMapping
+    @Operation(summary = "Obtener todos los fondos", description = "Devuelve una lista de todos los fondos disponibles en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de fondos obtenida exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<List<FundDTO>> getAllFunds() {
         try {
             List<FundDTO> funds = fundService.getAllFunds();
@@ -39,6 +47,12 @@ public class FundController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener fondo por ID", description = "Devuelve los detalles del fondo especificado por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fondo encontrado"),
+            @ApiResponse(responseCode = "404", description = "Fondo no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<FundDTO> getFundById(@PathVariable String id) {
         try {
             FundDTO fund = fundService.getFundById(id);
@@ -49,6 +63,11 @@ public class FundController {
     }
 
     @PostMapping
+    @Operation(summary = "Crear un nuevo fondo", description = "Crea y guarda un nuevo fondo en el sistema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Fondo creado exitosamente"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<FundDTO> createFund(@Valid @RequestBody FundDTO fundDTO) {
         try {
             FundDTO savedFund = fundService.saveFund(fundDTO);
@@ -59,6 +78,12 @@ public class FundController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Actualizar fondo por ID", description = "Actualiza los detalles del fondo especificado por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fondo actualizado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Fondo no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<FundDTO> updateFund(@PathVariable String id, @Valid @RequestBody FundDTO fundDTO) {
         try {
             fundDTO.setId(id);
@@ -72,6 +97,12 @@ public class FundController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar fondo por ID", description = "Elimina el fondo especificado por su ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Fondo eliminado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Fondo no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<Void> deleteFund(@PathVariable String id) {
         try {
             fundService.deleteFund(id);
