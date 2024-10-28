@@ -4,6 +4,7 @@ import backFpv.dto.ClientDTO;
 import backFpv.dto.FundDTO;
 import backFpv.dto.TransactionDTO;
 import backFpv.exception.InsufficientBalanceException;
+import backFpv.integrations.AwsSmsService;
 import backFpv.model.Transaction;
 import backFpv.repository.TransactionRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,34 +45,15 @@ public class TransactionServiceTest {
     @Mock
     private FundService fundService;
 
+    @Mock
+    private AwsSmsService awsSmsService;
+
     @InjectMocks
     private TransactionService transactionService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void testSubscribeToFund_Success() {
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setClientId("C1");
-        transactionDTO.setFundId("F1");
-        transactionDTO.setAmount(200.0);
-        ClientDTO clientDTO = new ClientDTO();
-        clientDTO.setAvailableBalance(500.0);
-        clientDTO.setName("John Doe");
-        clientDTO.setEmail("john.doe@example.com");
-        FundDTO fundDTO = new FundDTO();
-        fundDTO.setMinimumInvestment(100.0);
-        Transaction transaction = new Transaction();
-        when(clientService.getClientById("C1")).thenReturn(clientDTO);
-        when(fundService.getFundById("F1")).thenReturn(fundDTO);
-        when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
-        assertDoesNotThrow(() -> transactionService.subscribeToFund(transactionDTO));
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
-        verify(emailService, times(1)).sendEmail(eq("john.doe@example.com"), eq("Confirmación de Suscripción al Fondo"),
-                eq("Estimado John Doe, se ha realizado su suscripción al fondo con éxito. Monto: 200.0"));
     }
 
     @Test
@@ -231,5 +212,58 @@ public class TransactionServiceTest {
             transactionService.getTransactionById(transactionId);
         });
         assertTrue(exception.getMessage().contains("Transacción no encontrada con ID: " + transactionId));
+    }
+
+    @Test
+    void testSubscribeToFund_SuccessWithSMSNotification() throws InsufficientBalanceException {
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setClientId("C1");
+        transactionDTO.setFundId("F1");
+        transactionDTO.setAmount(200.0);
+        transactionDTO.setSendType("SMS");
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setAvailableBalance(500.0);
+        clientDTO.setPhoneNumber("1234567890");
+        clientDTO.setName("John Doe");
+        FundDTO fundDTO = new FundDTO();
+        fundDTO.setMinimumInvestment(100.0);
+        fundDTO.setName("Fondo XYZ");
+        Transaction transaction = new Transaction();
+        transaction.setId("T1");
+        when(clientService.getClientById("C1")).thenReturn(clientDTO);
+        when(fundService.getFundById("F1")).thenReturn(fundDTO);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
+        TransactionDTO result = transactionService.subscribeToFund(transactionDTO);
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(awsSmsService, times(1)).sendSms(eq("+571234567890"), contains("prueba desde java"));
+        verify(emailService, never()).sendEmail(anyString(), anyString(), anyString());
+        assertEquals("T1", result.getId());
+    }
+
+    @Test
+    void testSubscribeToFund_SuccessWithEmailNotification() throws InsufficientBalanceException {
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setClientId("C1");
+        transactionDTO.setFundId("F1");
+        transactionDTO.setAmount(200.0);
+        transactionDTO.setSendType("EMAIL");
+        ClientDTO clientDTO = new ClientDTO();
+        clientDTO.setAvailableBalance(500.0);
+        clientDTO.setEmail("john.doe@example.com");
+        clientDTO.setName("John Doe");
+        FundDTO fundDTO = new FundDTO();
+        fundDTO.setMinimumInvestment(100.0);
+        fundDTO.setName("Fondo XYZ");
+        Transaction transaction = new Transaction();
+        transaction.setId("T1");
+        when(clientService.getClientById("C1")).thenReturn(clientDTO);
+        when(fundService.getFundById("F1")).thenReturn(fundDTO);
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
+        TransactionDTO result = transactionService.subscribeToFund(transactionDTO);
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+        verify(emailService, times(1)).sendEmail(eq("john.doe@example.com"), contains("Confirmación de Suscripción"),
+                contains("se ha realizado su suscripción"));
+        verify(awsSmsService, never()).sendSms(anyString(), anyString());
+        assertEquals("T1", result.getId());
     }
 }

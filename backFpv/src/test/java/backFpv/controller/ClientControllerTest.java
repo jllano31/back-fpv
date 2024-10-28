@@ -160,4 +160,30 @@ public class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void getClientByUserName_ReturnsClientWithStatusOk() throws Exception {
+        String userName = "johndoe";
+        ClientDTO client = new ClientDTO();
+        client.setId("1");
+        client.setName("John Doe");
+        client.setUserName(userName);
+        client.setEmail("john.doe@example.com");
+        when(clientService.getClientByUserName(userName)).thenReturn(client);
+        mockMvc.perform(get("/api/clients/user/{userName}", userName)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userName").value(userName))
+                .andExpect(jsonPath("$.name").value("John Doe"))
+                .andExpect(jsonPath("$.email").value("john.doe@example.com"));
+    }
+
+    @Test
+    void getClientByUserName_ReturnsNotFound() throws Exception {
+        String userName = "nonexistentuser";
+        when(clientService.getClientByUserName(userName)).thenThrow(new RuntimeException("Client not found"));
+        mockMvc.perform(get("/api/clients/user/{userName}", userName)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }
